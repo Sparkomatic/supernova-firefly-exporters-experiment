@@ -1,12 +1,10 @@
-import { FileHelper, CSSHelper, GeneralHelper, ThemeHelper, FileNameHelper, StringCase } from "@supernovaio/export-utils"
-import { OutputTextFile, Token, TokenGroup, TokenType } from "@supernovaio/sdk-exporters"
+import { FileHelper, CSSHelper, GeneralHelper, ThemeHelper, FileNameHelper, StringCase, NamingHelper } from "@supernovaio/export-utils"
+import { OutputTextFile, Token, TokenGroup, TokenType, TokenTheme } from "@supernovaio/sdk-exporters"
 import { DesignSystemCollection } from '@supernovaio/sdk-exporters/build/sdk-typescript/src/model/base/SDKDesignSystemCollection'
 import { exportConfiguration } from ".."
 import { tokenObjectKeyName, resetTokenNameTracking, getTokenPrefix } from "../content/token"
-import { TokenTheme } from "@supernovaio/sdk-exporters"
 import { DEFAULT_STYLE_FILE_NAMES } from "../constants/defaults"
-import { createHierarchicalStructure, deepMerge, processTokenName } from "../utils/token-hierarchy"
-import { NamingHelper } from "@supernovaio/export-utils"
+import { deepMerge, processTokenName, tokenNameTracker } from "../utils/token-hierarchy"
 import { ThemeExportStyle, TokenNameStructure } from "../../config"
 
 /**
@@ -22,28 +20,18 @@ function createTokenValue(
     ? { description: token.description.trim() } 
     : {}
   
-  // Get the token type, forcing a return value even when prefixes are disabled
-  const tokenType = getTokenPrefix(token.tokenType, true)
-
   // For nested themes style, create an object with theme-specific values
   if (exportConfiguration.exportThemesAs === ThemeExportStyle.NestedThemes) {
     const valueObject = {}
 
     // Include base value only when processing base tokens (no theme)
-    // This ensures base values only come from the base file
     if (!theme && exportConfiguration.exportBaseValues) {
-      valueObject['base'] = {
-        value: baseValue,
-        type: tokenType
-      }
+      valueObject['base'] = baseValue
     }
 
     // Add themed value if theme is provided
     if (theme) {
-      valueObject[ThemeHelper.getThemeIdentifier(theme, StringCase.kebabCase)] = {
-        value: baseValue,
-        type: tokenType
-      }
+      valueObject[ThemeHelper.getThemeIdentifier(theme, StringCase.kebabCase)] = baseValue
     }
 
     // Add description last
@@ -53,12 +41,8 @@ function createTokenValue(
     }
   }
 
-  // Default case - return simple value object with type
-  return {
-    value: baseValue,
-    type: tokenType,
-    ...description
-  }
+  // Default case - return just the value
+  return baseValue
 }
 
 /**
@@ -184,8 +168,8 @@ function processTokensToObject(
       }
     })
 
-    // Create the hierarchical object structure for this token
-    const hierarchicalObject = createHierarchicalStructure(
+    // Create the hierarchical object structure for this token using the new sectioned structure
+    const hierarchicalObject = createSectionedHierarchicalStructure(
       token.tokenPath || [],
       token.name,
       createTokenValue(value, token, theme),
@@ -384,4 +368,81 @@ export function combinedStyleOutputFile(
     fileName: fileName,
     content: content
   })
+}
+
+/**
+ * Converts a token's full path and name into a hierarchical object structure with sections
+ * First level is always the section (primitive, semantic, or components)
+ * Middle levels come from path segments
+ * Last level is the token name
+ */
+function createSectionedHierarchicalStructure(
+  path: string[] | undefined, 
+  name: string, 
+  value: any,
+  token: Token,
+  collections: Array<DesignSystemCollection> = []
+): any {
+  // Get collection name if needed for collection-based token organization
+  let collectionSegment: string | null = null
+  if (exportConfiguration.tokenNameStructure === 'collectionPathAndName' && token.collectionId) {
+    const collection = collections.find(c => c.persistentId === token.collectionId)
+    collectionSegment = collection?.name ?? null
+  }
+
+  // Determine which section this token belongs to
+  let section: string
+  if (token.collectionId) {
+    // If token has a collection, it's a component token
+    section = 'components'
+  } else if (token.tokenPath && token.tokenPath.length > 0) {
+    // If token has a path, it's a semantic token
+    section = 'semantic'
+  } else {
+    // Otherwise it's a primitive token
+    section = 'primitive'
+  }
+
+  // Build the initial segments array with section
+  const segments = [section]
+
+  // Add collection to the output path if present
+  if (collectionSegment) {
+    segments.push(NamingHelper.codeSafeVariableName(collectionSegment, exportConfiguration.tokenNameStyle))
+  }
+
+  // Create path segments array for name uniqueness checking
+  const pathSegments = [
+    ...(collectionSegment ? [collectionSegment] : []),
+    ...(exportConfiguration.tokenNameStructure !== 'nameOnly'
+      ? (path || [])
+          .filter(segment => segment && segment.trim().length > 0)
+          .map(segment => NamingHelper.codeSafeVariableName(segment, exportConfiguration.tokenNameStyle))
+      : [])
+  ]
+
+  // Add path segments to the output structure
+  if (exportConfiguration.tokenNameStructure !== 'nameOnly') {
+    segments.push(
+      ...(path || [])
+        .filter(segment => segment && segment.trim().length > 0)
+        .map(segment => NamingHelper.codeSafeVariableName(segment, exportConfiguration.tokenNameStyle))
+    )
+  }
+
+  // Generate a unique token name
+  const tokenName = tokenNameTracker.getSimpleTokenName(
+    token,
+    exportConfiguration.tokenNameStyle,
+    false,
+    pathSegments
+  )
+
+  // Add the unique token name as the final segment, removing any leading underscore
+  segments.push(tokenName.replace(/^_/, ''))
+
+  // Build the nested object structure from the segments
+  return segments.reduceRight((nestedValue, segment) => ({
+    [segment]: nestedValue
+  }), value)
 }
