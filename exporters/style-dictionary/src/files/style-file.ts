@@ -72,20 +72,11 @@ function processTokensToObject(
   collections: Array<DesignSystemCollection> = [],
   allTokens?: Array<Token>
 ): any | null {
-  // Clear any previously cached token names to ensure clean generation
   resetTokenNameTracking()
-
-  // Skip generating empty files unless explicitly configured to do so
   if (!exportConfiguration.generateEmptyFiles && tokens.length === 0) {
     return null
   }
-
-  // Create a lookup map for quick token reference resolution using all tokens
-  // This ensures that references to tokens outside the current filtered set still work
   const mappedTokens = new Map((allTokens || tokens).map((token) => [token.id, token]))
-
-  // Sort tokens if configured
-  // This can make it easier to find tokens in the generated files
   let sortedTokens = [...tokens]
   if (exportConfiguration.tokenSortOrder === 'alphabetical') {
     sortedTokens.sort((a, b) => {
@@ -94,22 +85,12 @@ function processTokensToObject(
       return nameA.localeCompare(nameB)
     })
   }
-
-  // Initialize the root object that will contain all processed tokens
   const tokenObject: any = {}
-  
-  // Add generated file disclaimer if enabled
-  // This helps users understand that the file is auto-generated
   if (exportConfiguration.showGeneratedFileDisclaimer) {
     tokenObject._comment = exportConfiguration.disclaimer
   }
-  
-  // Process each token and build the hierarchical structure
   sortedTokens.forEach(token => {
-    // Generate the token's object key name based on configuration
     const name = tokenObjectKeyName(token, tokenGroups, true, collections)
-
-    // Convert token to CSS-compatible value, handling references and formatting
     const value = CSSHelper.tokenToCSS(token, mappedTokens, {
       allowReferences: exportConfiguration.useReferences,
       decimals: exportConfiguration.colorPrecision,
@@ -117,28 +98,20 @@ function processTokensToObject(
       forceRemUnit: exportConfiguration.forceRemUnit,
       remBase: exportConfiguration.remBase,
       tokenToVariableRef: (t) => {
-        // Build the reference path based on token structure configuration
         const prefix = getTokenPrefix(t.tokenType)
         const pathSegments = (t.tokenPath || [])
           .filter(segment => segment && segment.trim().length > 0)
           .map(segment => NamingHelper.codeSafeVariableName(segment, exportConfiguration.tokenNameStyle))
-
         const tokenName = processTokenName(t, pathSegments)
-
-        // Build segments array based on configuration
         let segments: string[] = []
         if (prefix) {
           segments.push(prefix)
         }
-
-        // Handle different token name structure configurations
         switch (exportConfiguration.tokenNameStructure) {
           case TokenNameStructure.NameOnly:
             segments.push(tokenName)
             break
-            
           case TokenNameStructure.CollectionPathAndName:
-            // Include collection name in the path if available
             if (t.collectionId) {
               const collection = collections.find(c => c.persistentId === t.collectionId)
               if (collection) {
@@ -148,13 +121,10 @@ function processTokensToObject(
             }
             segments.push(...pathSegments, tokenName)
             break
-            
           case TokenNameStructure.PathAndName:
             segments.push(...pathSegments, tokenName)
             break
         }
-
-        // Add global prefix if configured
         if (exportConfiguration.globalNamePrefix) {
           segments.unshift(
             NamingHelper.codeSafeVariableName(
@@ -163,12 +133,9 @@ function processTokensToObject(
             )
           )
         }
-
-        return `{${segments.join('.')}}`
+        return `{${segments.join('.')}`
       }
     })
-
-    // Create the hierarchical object structure for this token using the new sectioned structure
     const hierarchicalObject = createSectionedHierarchicalStructure(
       token.tokenPath || [],
       token.name,
@@ -176,11 +143,8 @@ function processTokensToObject(
       token,
       collections
     )
-
-    // Merge the token's object structure into the main object
     Object.assign(tokenObject, deepMerge(tokenObject, hierarchicalObject))
   })
-
   return tokenObject
 }
 
