@@ -87,13 +87,6 @@ function processTokensToObject(
   if (exportConfiguration.showGeneratedFileDisclaimer) {
     tokenObject._comment = exportConfiguration.disclaimer
   }
-  // Add minimal __debug property at the top
-  tokenObject.__debug = {
-    groupSemanticByColorSchemeAndTheme: exportConfiguration.groupSemanticByColorSchemeAndTheme
-  }
-
-  // Debug: Log config and tokens
-  console.log('DEBUG: groupSemanticByColorSchemeAndTheme', exportConfiguration.groupSemanticByColorSchemeAndTheme)
 
   // Custom grouping for semantic tokens if enabled
   if (exportConfiguration.groupSemanticByColorSchemeAndTheme) {
@@ -106,9 +99,6 @@ function processTokensToObject(
     const componentTokens = sortedTokens.filter(token => token.collectionId)
     const semanticTokens = sortedTokens.filter(token => token.tokenPath && token.tokenPath.length > 0 && token.tokenPath[0] === 'semantic')
 
-    // Debug: Log semantic tokens
-    console.log('DEBUG: semanticTokens', semanticTokens.map(t => t.name))
-
     // Group semantic tokens by all available themes
     const colorScheme: any = {}
     // Find all unique theme names from semantic tokens
@@ -118,8 +108,6 @@ function processTokensToObject(
         allThemes.add(token.variableModeInfo.modeName.toLowerCase())
       }
     })
-    // Debug: Log all detected themes
-    console.log('DEBUG: allThemes', Array.from(allThemes))
     // If no themes found, fallback to 'base'
     if (allThemes.size === 0) {
       allThemes.add('base')
@@ -196,13 +184,6 @@ function processTokensToObject(
     })
     if (!tokenObject.semantic) tokenObject.semantic = {}
     tokenObject.semantic.colorScheme = colorScheme
-    // Add full __debug property with semanticTokens and allThemes
-    tokenObject.__debug = {
-      groupSemanticByColorSchemeAndTheme: exportConfiguration.groupSemanticByColorSchemeAndTheme,
-      semanticTokens: semanticTokens.map(t => t.name),
-      allThemes: Array.from(allThemes),
-      semantic: tokenObject.semantic
-    }
     return tokenObject
   }
 
