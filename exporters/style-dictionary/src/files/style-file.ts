@@ -1,3 +1,4 @@
+console.log('DEBUG: Supernova Style Dictionary exporter loaded and running');
 import { FileHelper, CSSHelper, GeneralHelper, ThemeHelper, FileNameHelper, StringCase, NamingHelper } from "@supernovaio/export-utils"
 import { OutputTextFile, Token, TokenGroup, TokenType, TokenTheme } from "@supernovaio/sdk-exporters"
 import { DesignSystemCollection } from '@supernovaio/sdk-exporters/build/sdk-typescript/src/model/base/SDKDesignSystemCollection'
@@ -87,6 +88,9 @@ function processTokensToObject(
     tokenObject._comment = exportConfiguration.disclaimer
   }
 
+  // Debug: Log config and tokens
+  console.log('DEBUG: groupSemanticByColorSchemeAndTheme', exportConfiguration.groupSemanticByColorSchemeAndTheme)
+
   // Custom grouping for semantic tokens if enabled
   if (exportConfiguration.groupSemanticByColorSchemeAndTheme) {
     // Separate tokens by section
@@ -98,119 +102,8 @@ function processTokensToObject(
     const componentTokens = sortedTokens.filter(token => token.collectionId)
     const semanticTokens = sortedTokens.filter(token => token.tokenPath && token.tokenPath.length > 0 && token.tokenPath[0] === 'semantic')
 
-    // Add primitive and components as usual
-    primitiveTokens.forEach(token => {
-      const name = tokenObjectKeyName(token, tokenGroups, true, collections)
-      const value = CSSHelper.tokenToCSS(token, mappedTokens, {
-        allowReferences: exportConfiguration.useReferences,
-        decimals: exportConfiguration.colorPrecision,
-        colorFormat: exportConfiguration.colorFormat,
-        forceRemUnit: exportConfiguration.forceRemUnit,
-        remBase: exportConfiguration.remBase,
-        tokenToVariableRef: (t) => {
-          const prefix = getTokenPrefix(t.tokenType)
-          const pathSegments = (t.tokenPath || [])
-            .filter(segment => segment && segment.trim().length > 0)
-            .map(segment => NamingHelper.codeSafeVariableName(segment, exportConfiguration.tokenNameStyle))
-          const tokenName = processTokenName(t, pathSegments)
-          let segments: string[] = []
-          if (prefix) {
-            segments.push(prefix)
-          }
-          switch (exportConfiguration.tokenNameStructure) {
-            case TokenNameStructure.NameOnly:
-              segments.push(tokenName)
-              break
-            case TokenNameStructure.CollectionPathAndName:
-              if (t.collectionId) {
-                const collection = collections.find(c => c.persistentId === t.collectionId)
-                if (collection) {
-                  const collectionSegment = NamingHelper.codeSafeVariableName(collection.name, exportConfiguration.tokenNameStyle)
-                  segments.push(collectionSegment)
-                }
-              }
-              segments.push(...pathSegments, tokenName)
-              break
-            case TokenNameStructure.PathAndName:
-              segments.push(...pathSegments, tokenName)
-              break
-          }
-          if (exportConfiguration.globalNamePrefix) {
-            segments.unshift(
-              NamingHelper.codeSafeVariableName(
-                exportConfiguration.globalNamePrefix, 
-                exportConfiguration.tokenNameStyle
-              )
-            )
-          }
-          return `{${segments.join('.')}`
-        }
-      })
-      const hierarchicalObject = createSectionedHierarchicalStructure(
-        token.tokenPath || [],
-        token.name,
-        createTokenValue(value, token, theme),
-        token,
-        collections
-      )
-      Object.assign(tokenObject, deepMerge(tokenObject, hierarchicalObject))
-    })
-    componentTokens.forEach(token => {
-      const name = tokenObjectKeyName(token, tokenGroups, true, collections)
-      const value = CSSHelper.tokenToCSS(token, mappedTokens, {
-        allowReferences: exportConfiguration.useReferences,
-        decimals: exportConfiguration.colorPrecision,
-        colorFormat: exportConfiguration.colorFormat,
-        forceRemUnit: exportConfiguration.forceRemUnit,
-        remBase: exportConfiguration.remBase,
-        tokenToVariableRef: (t) => {
-          const prefix = getTokenPrefix(t.tokenType)
-          const pathSegments = (t.tokenPath || [])
-            .filter(segment => segment && segment.trim().length > 0)
-            .map(segment => NamingHelper.codeSafeVariableName(segment, exportConfiguration.tokenNameStyle))
-          const tokenName = processTokenName(t, pathSegments)
-          let segments: string[] = []
-          if (prefix) {
-            segments.push(prefix)
-          }
-          switch (exportConfiguration.tokenNameStructure) {
-            case TokenNameStructure.NameOnly:
-              segments.push(tokenName)
-              break
-            case TokenNameStructure.CollectionPathAndName:
-              if (t.collectionId) {
-                const collection = collections.find(c => c.persistentId === t.collectionId)
-                if (collection) {
-                  const collectionSegment = NamingHelper.codeSafeVariableName(collection.name, exportConfiguration.tokenNameStyle)
-                  segments.push(collectionSegment)
-                }
-              }
-              segments.push(...pathSegments, tokenName)
-              break
-            case TokenNameStructure.PathAndName:
-              segments.push(...pathSegments, tokenName)
-              break
-          }
-          if (exportConfiguration.globalNamePrefix) {
-            segments.unshift(
-              NamingHelper.codeSafeVariableName(
-                exportConfiguration.globalNamePrefix, 
-                exportConfiguration.tokenNameStyle
-              )
-            )
-          }
-          return `{${segments.join('.')}`
-        }
-      })
-      const hierarchicalObject = createSectionedHierarchicalStructure(
-        token.tokenPath || [],
-        token.name,
-        createTokenValue(value, token, theme),
-        token,
-        collections
-      )
-      Object.assign(tokenObject, deepMerge(tokenObject, hierarchicalObject))
-    })
+    // Debug: Log semantic tokens
+    console.log('DEBUG: semanticTokens', semanticTokens.map(t => t.name))
 
     // Group semantic tokens by all available themes
     const colorScheme: any = {}
@@ -221,6 +114,8 @@ function processTokensToObject(
         allThemes.add(token.variableModeInfo.modeName.toLowerCase())
       }
     })
+    // Debug: Log all detected themes
+    console.log('DEBUG: allThemes', Array.from(allThemes))
     // If no themes found, fallback to 'base'
     if (allThemes.size === 0) {
       allThemes.add('base')
@@ -297,6 +192,25 @@ function processTokensToObject(
     })
     if (!tokenObject.semantic) tokenObject.semantic = {}
     tokenObject.semantic.colorScheme = colorScheme
+    // Debug: Log the final semantic object
+    // Write debug info to a file
+    try {
+      if (exportConfiguration.groupSemanticByColorSchemeAndTheme) {
+        const debugInfo = {
+          groupSemanticByColorSchemeAndTheme: exportConfiguration.groupSemanticByColorSchemeAndTheme,
+          semanticTokens: semanticTokens.map(t => t.name),
+          allThemes: Array.from(allThemes),
+          semantic: tokenObject.semantic
+        }
+        FileHelper.createTextFile({
+          relativePath: './',
+          fileName: 'debug.json',
+          content: JSON.stringify(debugInfo, null, 2)
+        })
+      }
+    } catch (e) {
+      // Ignore errors in debug file writing
+    }
     return tokenObject
   }
 
