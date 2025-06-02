@@ -151,7 +151,7 @@
     {
         "key": "exportThemesAs",
         "type": "enum",
-        "default": "separateFiles",
+        "default": "applyDirectly",
         "title": "Theme export format",
         "description": "Control how themes are exported in the generated files.",
         "category": "Themes",
@@ -331,7 +331,7 @@
     {
         "key": "useTokenTypePrefixes",
         "type": "boolean",
-        "default": true,
+        "default": false,
         "title": "Use token type prefixes",
         "description": "Prefix hierarchy with token type (e.g., 'color.group.primary').",
         "category": "Token names"
