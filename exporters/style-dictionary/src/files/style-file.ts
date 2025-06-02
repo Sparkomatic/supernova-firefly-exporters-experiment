@@ -87,6 +87,10 @@ function processTokensToObject(
   if (exportConfiguration.showGeneratedFileDisclaimer) {
     tokenObject._comment = exportConfiguration.disclaimer
   }
+  // Add minimal __debug property at the top
+  tokenObject.__debug = {
+    groupSemanticByColorSchemeAndTheme: exportConfiguration.groupSemanticByColorSchemeAndTheme
+  }
 
   // Debug: Log config and tokens
   console.log('DEBUG: groupSemanticByColorSchemeAndTheme', exportConfiguration.groupSemanticByColorSchemeAndTheme)
@@ -192,24 +196,12 @@ function processTokensToObject(
     })
     if (!tokenObject.semantic) tokenObject.semantic = {}
     tokenObject.semantic.colorScheme = colorScheme
-    // Debug: Log the final semantic object
-    // Write debug info to a file
-    try {
-      if (exportConfiguration.groupSemanticByColorSchemeAndTheme) {
-        const debugInfo = {
-          groupSemanticByColorSchemeAndTheme: exportConfiguration.groupSemanticByColorSchemeAndTheme,
-          semanticTokens: semanticTokens.map(t => t.name),
-          allThemes: Array.from(allThemes),
-          semantic: tokenObject.semantic
-        }
-        FileHelper.createTextFile({
-          relativePath: './',
-          fileName: 'debug.json',
-          content: JSON.stringify(debugInfo, null, 2)
-        })
-      }
-    } catch (e) {
-      // Ignore errors in debug file writing
+    // Add full __debug property with semanticTokens and allThemes
+    tokenObject.__debug = {
+      groupSemanticByColorSchemeAndTheme: exportConfiguration.groupSemanticByColorSchemeAndTheme,
+      semanticTokens: semanticTokens.map(t => t.name),
+      allThemes: Array.from(allThemes),
+      semantic: tokenObject.semantic
     }
     return tokenObject
   }
