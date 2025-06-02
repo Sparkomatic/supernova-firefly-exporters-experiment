@@ -451,5 +451,13 @@
         "title": "Indentation",
         "description": "Number of spaces used for indentation in generated files.",
         "category": "Other"
+    },
+    {
+        "key": "groupSemanticByColorSchemeAndTheme",
+        "type": "boolean",
+        "default": false,
+        "title": "Group semantic tokens by colorScheme and theme",
+        "description": "If enabled, semantic tokens will be grouped under a 'colorScheme' layer and then by theme (e.g., 'light', 'dark').",
+        "category": "Other"
     }
 ]
