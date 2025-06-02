@@ -96,7 +96,7 @@ function processTokensToObject(
       return true
     })
     const componentTokens = sortedTokens.filter(token => token.collectionId)
-    const semanticTokens = sortedTokens.filter(token => !token.collectionId && token.tokenPath && token.tokenPath.length > 0)
+    const semanticTokens = sortedTokens.filter(token => token.tokenPath && token.tokenPath.length > 0 && token.tokenPath[0] === 'semantic')
 
     // Add primitive and components as usual
     primitiveTokens.forEach(token => {

@@ -193,7 +193,7 @@
     {
         "key": "fileStructure",
         "type": "enum",
-        "default": "separateByType",
+        "default": "singleFile",
         "title": "File structure",
         "description": "Control how token styles are organized in files",
         "category": "Style files",
