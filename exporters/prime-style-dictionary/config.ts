@@ -11,11 +11,6 @@ export enum ThemeExportStyle {
     NestedThemes = "nestedThemes"
 }
 
-export enum FileStructure {
-    SeparateByType = "separateByType",
-    SingleFile = "singleFile"
-}
-
 export enum TokenSortOrder {
     Default = "default",
     Alphabetical = "alphabetical"
@@ -66,6 +61,4 @@ export type ExporterConfiguration = {
   tokenSortOrder: TokenSortOrder
   /** When enabled, token names will be prefixed with their type */
   useTokenTypePrefixes: boolean
-  /** Control how token styles are organized in files */
-  fileStructure: FileStructure
 }
