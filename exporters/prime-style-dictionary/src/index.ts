@@ -41,6 +41,9 @@ Pulsar.export(async (sdk: Supernova, context: PulsarContext): Promise<Array<AnyO
     _lastUpdated: new Date().toISOString()
   };
 
+  // Define allowed top-level collection names
+  const allowedTopLevelCollections = ['primitive', 'semantic', 'components'];
+
   // --- Part 1: Process Primitive tokens ---
   // Primitives are treated as unthemed and processed directly.
   const primitiveTokens = tokens.filter(t => (t.tokenPath ? t.tokenPath[0] : "").toLowerCase() === 'primitive');
@@ -52,8 +55,8 @@ Pulsar.export(async (sdk: Supernova, context: PulsarContext): Promise<Array<AnyO
   }
   
   // --- Part 2: Process Themed collections ---
-  // Identify all collections that are not "primitive"
-  const themedCollectionNames = [...new Set(tokens.map(t => t.tokenPath ? t.tokenPath[0] : "").filter(name => name && name.toLowerCase() !== 'primitive'))];
+  // Identify all themed collections that are in the allowed list
+  const themedCollectionNames = [...new Set(tokens.map(t => t.tokenPath ? t.tokenPath[0] : "").filter(name => name && allowedTopLevelCollections.includes(name.toLowerCase()) && name.toLowerCase() !== 'primitive'))];
 
   // Loop through each theme defined in the design system (e.g., Light, Dark)
   for (const theme of allThemes) {
@@ -78,7 +81,7 @@ Pulsar.export(async (sdk: Supernova, context: PulsarContext): Promise<Array<AnyO
       
       // Add the result to the final structure, like `finalResult.semantic.light = ...`
       if (themeResult && Object.keys(themeResult).length > 0) {
-        deepSet(finalResult, [collectionNameLower, themeName], themeResult);
+        deepSet(finalResult, [collectionNameLower, 'colorScheme', themeName], themeResult);
       }
     }
   }
