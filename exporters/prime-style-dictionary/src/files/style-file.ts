@@ -185,12 +185,14 @@ function processTokensToObject(
     })
 
     // Create the hierarchical object structure for this token
+    const tokenPathWithoutCollection = (token.tokenPath || []).slice(1)
     const hierarchicalObject = createHierarchicalStructure(
-      token.tokenPath || [],
+      tokenPathWithoutCollection,
       token.name,
       createTokenValue(value, token, theme),
       token,
-      collections
+      collections,
+      { includeTypePrefix: false }
     )
 
     // Merge the token's object structure into the main object
@@ -243,13 +245,21 @@ function groupTokensByCollection(
   // Add a timestamp for debugging purposes
   tokenObject._lastUpdated = new Date().toISOString()
   
+  // Debug: Log collection information
+  console.log('Collections:', collections.map(c => ({ id: c.persistentId, name: c.name })))
+  
   // Group tokens by collection
   const tokensByCollection = new Map<string, Token[]>()
   
   sortedTokens.forEach(token => {
     let collectionName = 'primitive' // default collection
     
-    if (token.collectionId) {
+    // Extract collection name from the token's path or collection information
+    if (token.tokenPath && token.tokenPath.length > 0) {
+      // Use the first segment of the token path as the collection name
+      collectionName = token.tokenPath[0].toLowerCase()
+    } else if (token.collectionId) {
+      // Fallback to collection ID if no path
       const collection = collections.find(c => c.persistentId === token.collectionId)
       if (collection) {
         collectionName = collection.name.toLowerCase()
@@ -262,7 +272,7 @@ function groupTokensByCollection(
     tokensByCollection.get(collectionName)!.push(token)
   })
   
-  // Process each collection group
+  // Process each collection group and add directly to the root object
   tokensByCollection.forEach((collectionTokens, collectionName) => {
     const collectionObject: any = {}
     
@@ -331,8 +341,9 @@ function groupTokensByCollection(
       })
 
       // Create the hierarchical object structure for this token
+      const tokenPathWithoutCollection = (token.tokenPath || []).slice(1)
       const hierarchicalObject = createHierarchicalStructure(
-        token.tokenPath || [],
+        tokenPathWithoutCollection,
         token.name,
         createTokenValue(value, token, theme),
         token,
@@ -344,7 +355,7 @@ function groupTokensByCollection(
       Object.assign(collectionObject, deepMerge(collectionObject, hierarchicalObject))
     })
     
-    // Add this collection to the main object
+    // Add this collection directly to the root object
     tokenObject[collectionName] = collectionObject
   })
 

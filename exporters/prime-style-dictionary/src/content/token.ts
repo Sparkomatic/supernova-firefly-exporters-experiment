@@ -35,14 +35,14 @@ export function tokenObjectKeyName(
     tokenGroups.find((group) => group.id === token.parentGroupId) : 
     null
 
-  // Get the prefix for this token type
-  const prefix = getTokenPrefix(token.tokenType)
+  // For collection-based grouping, don't use any prefix to avoid the "civica" wrapper
+  const prefix = ''
 
   return NamingHelper.codeSafeVariableNameForToken(
     token,
     exportConfiguration.tokenNameStyle,
     parentGroup ?? null,
-    [exportConfiguration.globalNamePrefix, prefix, collectionName].filter(Boolean).join('-')
+    [prefix, collectionName].filter(Boolean).join('-')
   )
 }
 

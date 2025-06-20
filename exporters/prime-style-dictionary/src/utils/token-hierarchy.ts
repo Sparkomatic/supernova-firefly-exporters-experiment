@@ -59,12 +59,8 @@ export function createHierarchicalStructure(
     collectionSegment = collection?.name ?? null
   }
 
-  // Build the initial segments array with global prefix (if any) and type prefix
-  const segments = [
-    ...(exportConfiguration.globalNamePrefix ? 
-      [NamingHelper.codeSafeVariableName(exportConfiguration.globalNamePrefix, exportConfiguration.tokenNameStyle)] : 
-      [])
-  ]
+  // Build the initial segments array
+  const segments: string[] = []
 
   // Add type prefix if enabled
   if (options.includeTypePrefix) {
@@ -83,25 +79,28 @@ export function createHierarchicalStructure(
   // Create path segments array for name uniqueness checking
   // We include the collection name here so tokens with the same path in different collections
   // don't get treated as duplicates
-  const pathSegments = [
-    // Collection name (if any) becomes part of the uniqueness check
-    ...(collectionSegment ? [collectionSegment] : []),
-    // Regular path segments are included unless nameOnly structure is selected
-    ...(exportConfiguration.tokenNameStructure !== 'nameOnly'
-      ? (path || [])
-          .filter(segment => segment && segment.trim().length > 0)
-          .map(segment => NamingHelper.codeSafeVariableName(segment, exportConfiguration.tokenNameStyle))
-      : [])
-  ]
+  const pathSegments: string[] = []
+  
+  // Collection name (if any) becomes part of the uniqueness check
+  if (collectionSegment) {
+    pathSegments.push(collectionSegment)
+  }
+  
+  // Regular path segments are included unless nameOnly structure is selected
+  if (exportConfiguration.tokenNameStructure !== 'nameOnly') {
+    const filteredPath = (path || [])
+      .filter(segment => segment && segment.trim().length > 0)
+      .map(segment => NamingHelper.codeSafeVariableName(segment, exportConfiguration.tokenNameStyle))
+    pathSegments.push(...filteredPath)
+  }
 
   // Add path segments to the output structure
   // We don't include collection here since it was already added above
   if (exportConfiguration.tokenNameStructure !== 'nameOnly') {
-    segments.push(
-      ...(path || [])
-        .filter(segment => segment && segment.trim().length > 0)
-        .map(segment => NamingHelper.codeSafeVariableName(segment, exportConfiguration.tokenNameStyle))
-    )
+    const filteredPath = (path || [])
+      .filter(segment => segment && segment.trim().length > 0)
+      .map(segment => NamingHelper.codeSafeVariableName(segment, exportConfiguration.tokenNameStyle))
+    segments.push(...filteredPath)
   }
 
   // Generate a unique token name that considers the collection context
