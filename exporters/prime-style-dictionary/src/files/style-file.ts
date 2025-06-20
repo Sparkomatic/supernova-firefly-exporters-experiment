@@ -1,5 +1,5 @@
 import { CSSHelper } from "@supernovaio/export-utils"
-import { Token, TokenGroup } from "@supernovaio/sdk-exporters"
+import { Token, TokenGroup, TokenType } from "@supernovaio/sdk-exporters"
 import { DesignSystemCollection } from "@supernovaio/sdk-exporters/build/sdk-typescript/src/model/base/SDKDesignSystemCollection"
 import { exportConfiguration } from ".."
 import { createHierarchicalStructure, deepMerge, buildReferencePath } from "../utils/token-hierarchy"

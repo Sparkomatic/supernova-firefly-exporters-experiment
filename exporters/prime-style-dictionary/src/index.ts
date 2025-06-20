@@ -1,4 +1,4 @@
-import { Supernova, PulsarContext, RemoteVersionIdentifier, AnyOutputFile, Token, TokenGroup, TokenTheme } from "@supernovaio/sdk-exporters"
+import { Supernova, PulsarContext, RemoteVersionIdentifier, AnyOutputFile, Token, TokenGroup, TokenTheme, TokenType } from "@supernovaio/sdk-exporters"
 import { DesignSystemCollection } from "@supernovaio/sdk-exporters/build/sdk-typescript/src/model/base/SDKDesignSystemCollection"
 import { ExporterConfiguration } from "../config"
 import { buildTokenObject } from "./files/style-file"
@@ -35,6 +35,9 @@ Pulsar.export(async (sdk: Supernova, context: PulsarContext): Promise<Array<AnyO
   const collections = await sdk.tokens.getTokenCollections(remoteVersionIdentifier)
   const allThemes = await sdk.tokens.getTokenThemes(remoteVersionIdentifier)
 
+  // Filter out typography tokens (Figma text styles) to avoid logging issues
+  const filteredTokens = tokens.filter(token => token.tokenType !== TokenType.typography)
+
   // This is the root object we will build and export
   const finalResult: any = {
     _comment: exportConfiguration.disclaimer,
@@ -46,11 +49,11 @@ Pulsar.export(async (sdk: Supernova, context: PulsarContext): Promise<Array<AnyO
 
   // --- Part 1: Process Primitive tokens ---
   // Primitives are treated as unthemed and processed directly.
-  const primitiveTokens = tokens.filter(t => (t.tokenPath ? t.tokenPath[0] : "").toLowerCase() === 'primitive');
+  const primitiveTokens = filteredTokens.filter(t => (t.tokenPath ? t.tokenPath[0] : "").toLowerCase() === 'primitive');
   if (primitiveTokens.length > 0) {
     // For primitives, the reference dictionary (`allTokens`) is the original, unthemed token set.
     resetNameTracking(); // Reset before processing a new group
-    const primitiveResult = buildTokenObject(primitiveTokens, tokenGroups, collections, tokens);
+    const primitiveResult = buildTokenObject(primitiveTokens, tokenGroups, collections, filteredTokens);
     finalResult.primitive = primitiveResult;
   }
   
@@ -64,7 +67,7 @@ Pulsar.export(async (sdk: Supernova, context: PulsarContext): Promise<Array<AnyO
 
     // This is the key step: create a complete new set of tokens with this specific theme's values applied.
     // This new set will have correct values for all semantic/component tokens.
-    const allThemedTokens = sdk.tokens.computeTokensByApplyingThemes(tokens, tokens, [theme]);
+    const allThemedTokens = sdk.tokens.computeTokensByApplyingThemes(filteredTokens, filteredTokens, [theme]);
 
     // Now, loop through each themed collection name (semantic, components, etc.)
     for (const collectionName of themedCollectionNames) {
