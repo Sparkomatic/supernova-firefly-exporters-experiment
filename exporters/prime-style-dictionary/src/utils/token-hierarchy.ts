@@ -28,14 +28,14 @@ export function processTokenName(
     exportConfiguration.tokenNameStyle,
     false,
     path
-  )
+  );
 
   // Remove leading underscore from any token name
   if (tokenName.startsWith('_')) {
-    tokenName = tokenName.slice(1)
+    tokenName = tokenName.slice(1);
   }
 
-  return tokenName
+  return tokenName;
 }
 
 /**

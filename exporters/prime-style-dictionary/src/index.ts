@@ -55,8 +55,8 @@ Pulsar.export(async (sdk: Supernova, context: PulsarContext): Promise<Array<AnyO
   }
   
   // --- Part 2: Process Themed collections ---
-  // Identify all themed collections that are in the allowed list
-  const themedCollectionNames = [...new Set(tokens.map(t => t.tokenPath ? t.tokenPath[0] : "").filter(name => name && allowedTopLevelCollections.includes(name.toLowerCase()) && name.toLowerCase() !== 'primitive'))];
+  // Use the allowed list, excluding 'primitive', as the definitive list of themed collections to process.
+  const themedCollectionNames = allowedTopLevelCollections.filter(c => c !== 'primitive');
 
   // Loop through each theme defined in the design system (e.g., Light, Dark)
   for (const theme of allThemes) {
@@ -79,7 +79,7 @@ Pulsar.export(async (sdk: Supernova, context: PulsarContext): Promise<Array<AnyO
       resetNameTracking(); // Reset before processing a new group
       const themeResult = buildTokenObject(tokensInCollection, tokenGroups, collections, allThemedTokens);
       
-      // Add the result to the final structure, like `finalResult.semantic.light = ...`
+      // Add the result to the final structure, like `finalResult.semantic.colorScheme.light = ...`
       if (themeResult && Object.keys(themeResult).length > 0) {
         deepSet(finalResult, [collectionNameLower, 'colorScheme', themeName], themeResult);
       }
