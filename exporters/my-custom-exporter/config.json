@@ -151,7 +151,7 @@
     {
         "key": "exportThemesAs",
         "type": "enum",
-        "default": "separateFiles",
+        "default": "applyDirectly",
         "title": "Theme export format",
         "description": "Control how themes are exported in the generated files.",
         "category": "Themes",
@@ -193,7 +193,7 @@
     {
         "key": "fileStructure",
         "type": "enum",
-        "default": "separateByType",
+        "default": "singleFile",
         "title": "File structure",
         "description": "Control how token styles are organized in files",
         "category": "Style files",
@@ -331,7 +331,7 @@
     {
         "key": "useTokenTypePrefixes",
         "type": "boolean",
-        "default": true,
+        "default": false,
         "title": "Use token type prefixes",
         "description": "Prefix hierarchy with token type (e.g., 'color.group.primary').",
         "category": "Token names"
@@ -450,6 +450,14 @@
         "default": 2,
         "title": "Indentation",
         "description": "Number of spaces used for indentation in generated files.",
+        "category": "Other"
+    },
+    {
+        "key": "groupSemanticByColorSchemeAndTheme",
+        "type": "boolean",
+        "default": true,
+        "title": "Group semantic tokens by colorScheme and theme",
+        "description": "If enabled, semantic tokens will be grouped under a 'colorScheme' layer and then by theme (e.g., 'light', 'dark').",
         "category": "Other"
     }
 ]

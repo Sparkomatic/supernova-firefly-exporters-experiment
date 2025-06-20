@@ -3,6 +3,7 @@ import { ExporterConfiguration, ThemeExportStyle, FileStructure } from "../confi
 import { styleOutputFile, combinedStyleOutputFile } from "./files/style-file"
 import { StringCase, ThemeHelper } from "@supernovaio/export-utils"
 import { deepMerge } from "./utils/token-hierarchy"
+import { FileHelper } from "@supernovaio/export-utils"
 
 /** Exporter configuration from the resolved default configuration and user overrides */
 export const exportConfiguration = Pulsar.exportConfig<ExporterConfiguration>()
@@ -292,5 +293,26 @@ Pulsar.export(async (sdk: Supernova, context: PulsarContext): Promise<Array<AnyO
         .map((type) => styleOutputFile(type, tokens, tokenGroups, '', undefined, tokenCollections))
     : []
   
-  return processOutputFiles(defaultFiles)
+  let outputFiles: AnyOutputFile[] = [];
+
+  outputFiles = [...outputFiles, ...processOutputFiles(defaultFiles)];
+
+  // --- ADD DEBUG FILE ---
+  // Only add debug file if groupSemanticByColorSchemeAndTheme is enabled
+  if (exportConfiguration.groupSemanticByColorSchemeAndTheme) {
+    // Try to read the debug info from the processTokensToObject or reconstruct it here
+    // For simplicity, add a minimal debug file
+    const debugInfo = {
+      groupSemanticByColorSchemeAndTheme: exportConfiguration.groupSemanticByColorSchemeAndTheme,
+      // You can add more debug info here if needed
+      note: 'Add more debug info as needed from your exporter logic.'
+    };
+    outputFiles.push(FileHelper.createTextFile({
+      relativePath: './',
+      fileName: 'debug.json',
+      content: JSON.stringify(debugInfo, null, 2)
+    }));
+  }
+
+  return outputFiles;
 })

@@ -76,4 +76,6 @@ export type ExporterConfiguration = {
   useTokenTypePrefixes: boolean
   /** Control how token styles are organized in files */
   fileStructure: FileStructure
+  /** When enabled, semantic tokens will be grouped under a 'colorScheme' layer and then by theme (e.g., 'light', 'dark') */
+  groupSemanticByColorSchemeAndTheme: boolean
 }

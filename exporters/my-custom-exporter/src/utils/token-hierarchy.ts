@@ -5,7 +5,7 @@ import { exportConfiguration } from ".."
 import { getTokenPrefix } from "../content/token"
 
 // Create a single instance of the tracker for consistent name generation
-const tokenNameTracker = new TokenNameTracker()
+export const tokenNameTracker = new TokenNameTracker()
 
 /**
  * Reset the name tracking between file generations

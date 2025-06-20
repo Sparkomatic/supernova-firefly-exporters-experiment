@@ -1,0 +1,447 @@
+{
+  "_comment": "This file was generated automatically by Supernova.io and should not be changed manually. To modify the format or content of this file, please contact your design system team.",
+  "string": {
+    "primitive": {
+      "typography": {
+        "font-family": {
+          "base": {
+            "value": "Noto Sans",
+            "type": "string"
+          },
+          "mono": {
+            "value": "Noto Sans Mono",
+            "type": "string"
+          }
+        },
+        "font-style": {
+          "normal": {
+            "value": "normal",
+            "type": "string"
+          },
+          "italic": {
+            "value": "italic",
+            "type": "string"
+          }
+        },
+        "font-weight": {
+          "light": {
+            "value": "Light",
+            "type": "string"
+          },
+          "regular": {
+            "value": "Regular",
+            "type": "string"
+          },
+          "semibold": {
+            "value": "Semi Bold",
+            "type": "string"
+          },
+          "bold": {
+            "value": "Bold",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "semantic": {
+      "typography": {
+        "display": {
+          "light": {
+            "font-family": {
+              "value": "{string.primitive.typography.font-family.base}",
+              "type": "string"
+            },
+            "font-style": {
+              "value": "{string.primitive.typography.font-style.normal}",
+              "type": "string"
+            },
+            "font-weight": {
+              "value": "{string.primitive.typography.font-weight.light}",
+              "type": "string"
+            }
+          },
+          "regular": {
+            "font-family": {
+              "value": "{string.primitive.typography.font-family.base}",
+              "type": "string"
+            },
+            "font-style": {
+              "value": "{string.primitive.typography.font-style.normal}",
+              "type": "string"
+            },
+            "font-weight": {
+              "value": "{string.primitive.typography.font-weight.regular}",
+              "type": "string"
+            }
+          },
+          "semibold": {
+            "font-family": {
+              "value": "{string.primitive.typography.font-family.base}",
+              "type": "string"
+            },
+            "font-style": {
+              "value": "{string.primitive.typography.font-style.normal}",
+              "type": "string"
+            },
+            "font-weight": {
+              "value": "{string.primitive.typography.font-weight.semibold}",
+              "type": "string"
+            }
+          },
+          "bold": {
+            "font-family": {
+              "value": "{string.primitive.typography.font-family.base}",
+              "type": "string"
+            },
+            "font-style": {
+              "value": "{string.primitive.typography.font-style.normal}",
+              "type": "string"
+            },
+            "font-weight": {
+              "value": "{string.primitive.typography.font-weight.bold}",
+              "type": "string"
+            }
+          }
+        },
+        "title-1": {
+          "light": {
+            "font-family": {
+              "value": "{string.primitive.typography.font-family.base}",
+              "type": "string"
+            },
+            "font-style": {
+              "value": "{string.primitive.typography.font-style.normal}",
+              "type": "string"
+            },
+            "font-weight": {
+              "value": "{string.primitive.typography.font-weight.light}",
+              "type": "string"
+            }
+          },
+          "regular": {
+            "font-family": {
+              "value": "{string.primitive.typography.font-family.base}",
+              "type": "string"
+            },
+            "font-style": {
+              "value": "{string.primitive.typography.font-style.normal}",
+              "type": "string"
+            },
+            "font-weight": {
+              "value": "{string.primitive.typography.font-weight.regular}",
+              "type": "string"
+            }
+          },
+          "semibold": {
+            "font-family": {
+              "value": "{string.primitive.typography.font-family.base}",
+              "type": "string"
+            },
+            "font-style": {
+              "value": "{string.primitive.typography.font-style.normal}",
+              "type": "string"
+            },
+            "font-weight": {
+              "value": "{string.primitive.typography.font-weight.semibold}",
+              "type": "string"
+            }
+          },
+          "bold": {
+            "font-family": {
+              "value": "{string.primitive.typography.font-family.base}",
+              "type": "string"
+            },
+            "font-style": {
+              "value": "{string.primitive.typography.font-style.normal}",
+              "type": "string"
+            },
+            "font-weight": {
+              "value": "{string.primitive.typography.font-weight.bold}",
+              "type": "string"
+            }
+          }
+        },
+        "title-2": {
+          "light": {
+            "font-family": {
+              "value": "{string.primitive.typography.font-family.base}",
+              "type": "string"
+            },
+            "font-style": {
+              "value": "{string.primitive.typography.font-style.normal}",
+              "type": "string"
+            },
+            "font-weight": {
+              "value": "{string.primitive.typography.font-weight.light}",
+              "type": "string"
+            }
+          },
+          "regular": {
+            "font-family": {
+              "value": "{string.primitive.typography.font-family.base}",
+              "type": "string"
+            },
+            "font-style": {
+              "value": "{string.primitive.typography.font-style.normal}",
+              "type": "string"
+            },
+            "font-weight": {
+              "value": "{string.primitive.typography.font-weight.regular}",
+              "type": "string"
+            }
+          },
+          "semibold": {
+            "font-family": {
+              "value": "{string.primitive.typography.font-family.base}",
+              "type": "string"
+            },
+            "font-style": {
+              "value": "{string.primitive.typography.font-style.normal}",
+              "type": "string"
+            },
+            "font-weight": {
+              "value": "{string.primitive.typography.font-weight.semibold}",
+              "type": "string"
+            }
+          },
+          "bold": {
+            "font-family": {
+              "value": "{string.primitive.typography.font-family.base}",
+              "type": "string"
+            },
+            "font-style": {
+              "value": "{string.primitive.typography.font-style.normal}",
+              "type": "string"
+            },
+            "font-weight": {
+              "value": "{string.primitive.typography.font-weight.bold}",
+              "type": "string"
+            }
+          }
+        },
+        "title-3": {
+          "bold": {
+            "font-family": {
+              "value": "{string.primitive.typography.font-family.base}",
+              "type": "string"
+            },
+            "font-style": {
+              "value": "{string.primitive.typography.font-style.normal}",
+              "type": "string"
+            },
+            "font-weight": {
+              "value": "{string.primitive.typography.font-weight.bold}",
+              "type": "string"
+            }
+          },
+          "semibold": {
+            "font-family": {
+              "value": "{string.primitive.typography.font-family.base}",
+              "type": "string"
+            },
+            "font-style": {
+              "value": "{string.primitive.typography.font-style.normal}",
+              "type": "string"
+            },
+            "font-weight": {
+              "value": "{string.primitive.typography.font-weight.semibold}",
+              "type": "string"
+            }
+          },
+          "regular": {
+            "font-family": {
+              "value": "{string.primitive.typography.font-family.base}",
+              "type": "string"
+            },
+            "font-style": {
+              "value": "{string.primitive.typography.font-style.normal}",
+              "type": "string"
+            },
+            "font-weight": {
+              "value": "{string.primitive.typography.font-weight.regular}",
+              "type": "string"
+            }
+          }
+        },
+        "heading-5-deprecated": {
+          "regular": {
+            "font-family": {
+              "value": "{string.primitive.typography.font-family.base}",
+              "type": "string"
+            },
+            "font-weight": {
+              "value": "{string.primitive.typography.font-weight.regular}",
+              "type": "string"
+            },
+            "font-style": {
+              "value": "{string.primitive.typography.font-style.normal}",
+              "type": "string"
+            }
+          },
+          "semibold": {
+            "font-family": {
+              "value": "{string.primitive.typography.font-family.base}",
+              "type": "string"
+            },
+            "font-weight": {
+              "value": "{string.primitive.typography.font-weight.semibold}",
+              "type": "string"
+            },
+            "font-style": {
+              "value": "{string.primitive.typography.font-style.normal}",
+              "type": "string"
+            }
+          },
+          "bold": {
+            "font-family": {
+              "value": "{string.primitive.typography.font-family.base}",
+              "type": "string"
+            },
+            "font-weight": {
+              "value": "{string.primitive.typography.font-weight.bold}",
+              "type": "string"
+            },
+            "font-style": {
+              "value": "{string.primitive.typography.font-style.normal}",
+              "type": "string"
+            }
+          }
+        },
+        "heading-6-deprecated": {
+          "regular": {
+            "font-family": {
+              "value": "{string.primitive.typography.font-family.base}",
+              "type": "string"
+            },
+            "font-weight": {
+              "value": "{string.primitive.typography.font-weight.regular}",
+              "type": "string"
+            },
+            "font-style": {
+              "value": "{string.primitive.typography.font-style.normal}",
+              "type": "string"
+            }
+          },
+          "semibold": {
+            "font-family": {
+              "value": "{string.primitive.typography.font-family.base}",
+              "type": "string"
+            },
+            "font-weight": {
+              "value": "{string.primitive.typography.font-weight.semibold}",
+              "type": "string"
+            },
+            "font-style": {
+              "value": "{string.primitive.typography.font-style.normal}",
+              "type": "string"
+            }
+          },
+          "bold": {
+            "font-family": {
+              "value": "{string.primitive.typography.font-family.base}",
+              "type": "string"
+            },
+            "font-weight": {
+              "value": "{string.primitive.typography.font-weight.bold}",
+              "type": "string"
+            },
+            "font-style": {
+              "value": "{string.primitive.typography.font-style.normal}",
+              "type": "string"
+            }
+          }
+        },
+        "large-body-text": {
+          "regular": {
+            "font-family": {
+              "value": "{string.primitive.typography.font-family.base}",
+              "type": "string"
+            },
+            "font-weight": {
+              "value": "{string.primitive.typography.font-weight.regular}",
+              "type": "string"
+            },
+            "font-style": {
+              "value": "{string.primitive.typography.font-style.normal}",
+              "type": "string"
+            }
+          },
+          "bold": {
+            "font-family": {
+              "value": "{string.primitive.typography.font-family.base}",
+              "type": "string"
+            },
+            "font-style": {
+              "value": "{string.primitive.typography.font-style.normal}",
+              "type": "string"
+            },
+            "font-weight": {
+              "value": "{string.primitive.typography.font-weight.bold}",
+              "type": "string"
+            }
+          },
+          "italic": {
+            "font-family": {
+              "value": "{string.primitive.typography.font-family.base}",
+              "type": "string"
+            },
+            "font-style": {
+              "value": "{string.primitive.typography.font-style.italic}",
+              "type": "string"
+            },
+            "font-weight": {
+              "value": "{string.primitive.typography.font-weight.regular}",
+              "type": "string"
+            }
+          }
+        },
+        "body-text": {
+          "regular": {
+            "font-family": {
+              "value": "{string.primitive.typography.font-family.base}",
+              "type": "string"
+            },
+            "font-style": {
+              "value": "{string.primitive.typography.font-style.normal}",
+              "type": "string"
+            },
+            "font-weight": {
+              "value": "{string.primitive.typography.font-weight.regular}",
+              "type": "string"
+            }
+          },
+          "bold": {
+            "font-family": {
+              "value": "{string.primitive.typography.font-family.base}",
+              "type": "string"
+            },
+            "font-style": {
+              "value": "{string.primitive.typography.font-style.normal}",
+              "type": "string"
+            },
+            "font-weight": {
+              "value": "{string.primitive.typography.font-weight.bold}",
+              "type": "string"
+            }
+          }
+        },
+        "small-body-text": {
+          "regular": {
+            "font-family": {
+              "value": "{string.primitive.typography.font-family.base}",
+              "type": "string"
+            },
+            "font-weight": {
+              "value": "{string.primitive.typography.font-weight.regular}",
+              "type": "string"
+            },
+            "font-style": {
+              "value": "{string.primitive.typography.font-style.normal}",
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

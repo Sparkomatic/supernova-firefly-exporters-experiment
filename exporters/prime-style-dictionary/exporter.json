@@ -1,7 +1,7 @@
 {
-    "id": "supernovaio.exporter-style-dictionary",
-    "name": "Style Dictionary",
-    "description": "Export your design tokens to Style Dictionary format.",
+    "id": "supernovaio.exporter-prime-style-dictionary",
+    "name": "Prime Style Dictionary",
+    "description": "Export your design tokens to a format suitable for Prime.",
     "author": "Supernova.io",
     "organization": "Supernova.io",
     "homepage": "https://supernova.io",
