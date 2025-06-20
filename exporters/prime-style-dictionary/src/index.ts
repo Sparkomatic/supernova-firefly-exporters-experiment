@@ -45,7 +45,12 @@ Pulsar.export(async (sdk: Supernova, context: PulsarContext): Promise<Array<AnyO
   };
 
   // Define allowed top-level collection names
-  const allowedTopLevelCollections = ['primitive', 'semantic', 'components'];
+  const allowedTopLevelCollections = ['primitive', 'semantic'];
+  
+  // Add components to the allowed collections if the configuration option is enabled
+  if (exportConfiguration.includeComponentTokens) {
+    allowedTopLevelCollections.push('components');
+  }
 
   // --- Part 1: Process Primitive tokens ---
   // Primitives are treated as unthemed and processed directly.

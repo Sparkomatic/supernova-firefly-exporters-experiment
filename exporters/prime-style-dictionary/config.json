@@ -411,5 +411,13 @@
         "title": "Indentation",
         "description": "Number of spaces used for indentation in generated files.",
         "category": "Other"
+    },
+    {
+        "key": "includeComponentTokens",
+        "type": "boolean",
+        "default": false,
+        "title": "Include component tokens",
+        "description": "When enabled, component tokens will be included in the export. When disabled, only primitive and semantic tokens will be exported.",
+        "category": "Other"
     }
 ]

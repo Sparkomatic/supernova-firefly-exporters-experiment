@@ -61,4 +61,6 @@ export type ExporterConfiguration = {
   tokenSortOrder: TokenSortOrder
   /** When enabled, token names will be prefixed with their type */
   useTokenTypePrefixes: boolean
+  /** When enabled, component tokens will be included in the export */
+  includeComponentTokens: boolean
 }
