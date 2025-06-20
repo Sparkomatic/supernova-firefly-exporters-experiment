@@ -106,15 +106,10 @@ export function createHierarchicalStructure(
   // Generate a unique token name that considers the collection context
   // This ensures we only add numbering (_1, _2) when there are actual conflicts
   // within the same collection path
-  const tokenName = tokenNameTracker.getSimpleTokenName(
-    token,
-    exportConfiguration.tokenNameStyle,
-    false,
-    pathSegments
-  )
+  const tokenName = processTokenName(token, pathSegments);
 
   // Add the unique token name as the final segment, removing any leading underscore
-  segments.push(tokenName.replace(/^_/, ''))
+  segments.push(tokenName);
 
   // Build the nested object structure from the segments
   return segments.reduceRight((nestedValue, segment) => ({
@@ -173,4 +168,17 @@ export function deepMerge(target: any, source: any): any {
   }
   
   return output
+}
+
+/**
+ * Builds a dot-separated path for a token, to be used in references.
+ * e.g., primitive.ui-teal.50
+ */
+export function buildReferencePath(token: Token): string {
+  const path = token.tokenPath ?? [];
+  const name = processTokenName(token, path);
+  
+  const segments = [...path, name];
+    
+  return segments.join('.');
 } 
