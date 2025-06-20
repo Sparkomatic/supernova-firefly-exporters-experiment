@@ -49,7 +49,8 @@ export function createHierarchicalStructure(
   name: string, 
   value: any,
   token: Token,
-  collections: Array<DesignSystemCollection> = []
+  collections: Array<DesignSystemCollection> = [],
+  options: { includeTypePrefix: boolean } = { includeTypePrefix: true }
 ): any {
   // Get collection name if needed for collection-based token organization
   let collectionSegment: string | null = null
@@ -58,19 +59,21 @@ export function createHierarchicalStructure(
     collectionSegment = collection?.name ?? null
   }
 
-  // First level is always the type prefix (e.g., 'color', 'typography')
-  const prefix = NamingHelper.codeSafeVariableName(
-    getTokenPrefix(token.tokenType),
-    exportConfiguration.tokenNameStyle
-  )
-
   // Build the initial segments array with global prefix (if any) and type prefix
   const segments = [
     ...(exportConfiguration.globalNamePrefix ? 
       [NamingHelper.codeSafeVariableName(exportConfiguration.globalNamePrefix, exportConfiguration.tokenNameStyle)] : 
-      []),
-    ...(prefix ? [prefix] : [])
+      [])
   ]
+
+  // Add type prefix if enabled
+  if (options.includeTypePrefix) {
+    const prefix = NamingHelper.codeSafeVariableName(
+        getTokenPrefix(token.tokenType),
+        exportConfiguration.tokenNameStyle
+    )
+    if (prefix) segments.push(prefix)
+  }
 
   // Add collection to the output path if present
   if (collectionSegment) {

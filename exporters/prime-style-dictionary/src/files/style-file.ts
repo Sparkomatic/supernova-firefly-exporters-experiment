@@ -201,6 +201,157 @@ function processTokensToObject(
 }
 
 /**
+ * Groups tokens by their collection instead of by type
+ * This creates a structure like: { "primitive": {...}, "semantic": {...}, "components": {...} }
+ */
+function groupTokensByCollection(
+  tokens: Array<Token>,
+  tokenGroups: Array<TokenGroup>,
+  theme?: TokenTheme,
+  collections: Array<DesignSystemCollection> = [],
+  allTokens?: Array<Token>
+): any | null {
+  // Clear any previously cached token names to ensure clean generation
+  resetTokenNameTracking()
+
+  // Skip generating empty files unless explicitly configured to do so
+  if (!exportConfiguration.generateEmptyFiles && tokens.length === 0) {
+    return null
+  }
+
+  // Create a lookup map for quick token reference resolution using all tokens
+  const mappedTokens = new Map((allTokens || tokens).map((token) => [token.id, token]))
+
+  // Sort tokens if configured
+  let sortedTokens = [...tokens]
+  if (exportConfiguration.tokenSortOrder === 'alphabetical') {
+    sortedTokens.sort((a, b) => {
+      const nameA = tokenObjectKeyName(a, tokenGroups, true, collections)
+      const nameB = tokenObjectKeyName(b, tokenGroups, true, collections)
+      return nameA.localeCompare(nameB)
+    })
+  }
+
+  // Initialize the root object with collection-based structure
+  const tokenObject: any = {}
+  
+  // Add generated file disclaimer if enabled
+  if (exportConfiguration.showGeneratedFileDisclaimer) {
+    tokenObject._comment = exportConfiguration.disclaimer
+  }
+  
+  // Add a timestamp for debugging purposes
+  tokenObject._lastUpdated = new Date().toISOString()
+  
+  // Group tokens by collection
+  const tokensByCollection = new Map<string, Token[]>()
+  
+  sortedTokens.forEach(token => {
+    let collectionName = 'primitive' // default collection
+    
+    if (token.collectionId) {
+      const collection = collections.find(c => c.persistentId === token.collectionId)
+      if (collection) {
+        collectionName = collection.name.toLowerCase()
+      }
+    }
+    
+    if (!tokensByCollection.has(collectionName)) {
+      tokensByCollection.set(collectionName, [])
+    }
+    tokensByCollection.get(collectionName)!.push(token)
+  })
+  
+  // Process each collection group
+  tokensByCollection.forEach((collectionTokens, collectionName) => {
+    const collectionObject: any = {}
+    
+    // Process each token in this collection
+    collectionTokens.forEach(token => {
+      // Generate the token's object key name based on configuration
+      const name = tokenObjectKeyName(token, tokenGroups, true, collections)
+
+      // Convert token to CSS-compatible value, handling references and formatting
+      const value = CSSHelper.tokenToCSS(token, mappedTokens, {
+        allowReferences: exportConfiguration.useReferences,
+        decimals: exportConfiguration.colorPrecision,
+        colorFormat: exportConfiguration.colorFormat,
+        forceRemUnit: exportConfiguration.forceRemUnit,
+        remBase: exportConfiguration.remBase,
+        tokenToVariableRef: (t) => {
+          // Build the reference path based on token structure configuration
+          const prefix = getTokenPrefix(t.tokenType)
+          const pathSegments = (t.tokenPath || [])
+            .filter(segment => segment && segment.trim().length > 0)
+            .map(segment => NamingHelper.codeSafeVariableName(segment, exportConfiguration.tokenNameStyle))
+
+          const tokenName = processTokenName(t, pathSegments)
+
+          // Build segments array based on configuration
+          let segments: string[] = []
+          if (prefix) {
+            segments.push(prefix)
+          }
+
+          // Handle different token name structure configurations
+          switch (exportConfiguration.tokenNameStructure) {
+            case TokenNameStructure.NameOnly:
+              segments.push(tokenName)
+              break
+              
+            case TokenNameStructure.CollectionPathAndName:
+              // Include collection name in the path if available
+              if (t.collectionId) {
+                const collection = collections.find(c => c.persistentId === t.collectionId)
+                if (collection) {
+                  const collectionSegment = NamingHelper.codeSafeVariableName(collection.name, exportConfiguration.tokenNameStyle)
+                  segments.push(collectionSegment)
+                }
+              }
+              segments.push(...pathSegments, tokenName)
+              break
+              
+            case TokenNameStructure.PathAndName:
+              segments.push(...pathSegments, tokenName)
+              break
+          }
+
+          // Add global prefix if configured
+          if (exportConfiguration.globalNamePrefix) {
+            segments.unshift(
+              NamingHelper.codeSafeVariableName(
+                exportConfiguration.globalNamePrefix, 
+                exportConfiguration.tokenNameStyle
+              )
+            )
+          }
+
+          return `{${segments.join('.')}}`
+        }
+      })
+
+      // Create the hierarchical object structure for this token
+      const hierarchicalObject = createHierarchicalStructure(
+        token.tokenPath || [],
+        token.name,
+        createTokenValue(value, token, theme),
+        token,
+        collections,
+        { includeTypePrefix: false }
+      )
+
+      // Merge the token's object structure into the collection object
+      Object.assign(collectionObject, deepMerge(collectionObject, hierarchicalObject))
+    })
+    
+    // Add this collection to the main object
+    tokenObject[collectionName] = collectionObject
+  })
+
+  return tokenObject
+}
+
+/**
  * Generates a style file for a specific token type (color.json, typography.json, etc.).
  * This function is used when fileStructure is set to 'separateByType'.
  * 
@@ -364,9 +515,9 @@ export function combinedStyleOutputFile(
     }
   }
 
-  // Process all tokens into a single structured object
+  // Process all tokens into a collection-based structured object
   // Pass the original tokens array for reference resolution
-  const tokenObject = processTokensToObject(tokens, tokenGroups, theme, collections, originalTokens)
+  const tokenObject = groupTokensByCollection(tokens, tokenGroups, theme, collections, originalTokens)
   if (!tokenObject) {
     return null
   }
