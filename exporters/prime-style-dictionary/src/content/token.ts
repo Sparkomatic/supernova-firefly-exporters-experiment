@@ -23,26 +23,17 @@ export function tokenObjectKeyName(
   forExport: boolean = false,
   collections: Array<DesignSystemCollection> = []
 ): string {
-  // Find collection if needed
-  let collectionName: string | null = null
-  if (exportConfiguration.tokenNameStructure === 'collectionPathAndName' && token.collectionId) {
-    const collection = collections.find(c => c.persistentId === token.collectionId)
-    collectionName = collection?.name ?? null
-  }
+  // Always include the parent group (hardcoded to "Group path + Token name" behavior)
+  const parentGroup = tokenGroups.find((group) => group.id === token.parentGroupId)
 
-  // For nameOnly structure, don't pass the parent group
-  const parentGroup = exportConfiguration.tokenNameStructure !== 'nameOnly' ? 
-    tokenGroups.find((group) => group.id === token.parentGroupId) : 
-    null
-
-  // For collection-based grouping, don't use any prefix to avoid the "civica" wrapper
+  // No prefix needed
   const prefix = ''
 
   return NamingHelper.codeSafeVariableNameForToken(
     token,
     exportConfiguration.tokenNameStyle,
     parentGroup ?? null,
-    [prefix, collectionName].filter(Boolean).join('-')
+    prefix
   )
 }
 

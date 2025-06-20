@@ -1,27 +1,5 @@
 [
     {
-        "key": "tokenNameStructure",
-        "type": "enum",
-        "default": "pathAndName",
-        "title": "Token path structure",
-        "description": "Control which hierarchy levels are included in the token path.",
-        "category": "Token names",
-        "options": {
-            "pathAndName": {
-                "label": "Group path + Token name",
-                "description": "Include group path and token name (e.g. button/primary/bg)"
-            },
-            "nameOnly": {
-                "label": "Token name only",
-                "description": "Only include token name without group path (e.g. primary)"
-            },
-            "collectionPathAndName": {
-                "label": "Collection + Group path + Token name",
-                "description": "Include collection, group path, and token name (e.g. core/button/primary/bg)"
-            }
-        }
-    },
-    {
         "key": "tokenNameStyle",
         "type": "enum",
         "default": "kebabCase",

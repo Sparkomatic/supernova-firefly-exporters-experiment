@@ -52,13 +52,6 @@ export function createHierarchicalStructure(
   collections: Array<DesignSystemCollection> = [],
   options: { includeTypePrefix: boolean } = { includeTypePrefix: true }
 ): any {
-  // Get collection name if needed for collection-based token organization
-  let collectionSegment: string | null = null
-  if (exportConfiguration.tokenNameStructure === 'collectionPathAndName' && token.collectionId) {
-    const collection = collections.find(c => c.persistentId === token.collectionId)
-    collectionSegment = collection?.name ?? null
-  }
-
   // Build the initial segments array
   const segments: string[] = []
 
@@ -71,41 +64,19 @@ export function createHierarchicalStructure(
     if (prefix) segments.push(prefix)
   }
 
-  // Add collection to the output path if present
-  if (collectionSegment) {
-    segments.push(NamingHelper.codeSafeVariableName(collectionSegment, exportConfiguration.tokenNameStyle))
-  }
-
   // Create path segments array for name uniqueness checking
-  // We include the collection name here so tokens with the same path in different collections
-  // don't get treated as duplicates
   const pathSegments: string[] = []
   
-  // Collection name (if any) becomes part of the uniqueness check
-  if (collectionSegment) {
-    pathSegments.push(collectionSegment)
-  }
-  
-  // Regular path segments are included unless nameOnly structure is selected
-  if (exportConfiguration.tokenNameStructure !== 'nameOnly') {
-    const filteredPath = (path || [])
-      .filter(segment => segment && segment.trim().length > 0)
-      .map(segment => NamingHelper.codeSafeVariableName(segment, exportConfiguration.tokenNameStyle))
-    pathSegments.push(...filteredPath)
-  }
+  // Regular path segments are always included (hardcoded to "Group path + Token name" behavior)
+  const filteredPath = (path || [])
+    .filter(segment => segment && segment.trim().length > 0)
+    .map(segment => NamingHelper.codeSafeVariableName(segment, exportConfiguration.tokenNameStyle))
+  pathSegments.push(...filteredPath)
 
   // Add path segments to the output structure
-  // We don't include collection here since it was already added above
-  if (exportConfiguration.tokenNameStructure !== 'nameOnly') {
-    const filteredPath = (path || [])
-      .filter(segment => segment && segment.trim().length > 0)
-      .map(segment => NamingHelper.codeSafeVariableName(segment, exportConfiguration.tokenNameStyle))
-    segments.push(...filteredPath)
-  }
+  segments.push(...filteredPath)
 
-  // Generate a unique token name that considers the collection context
-  // This ensures we only add numbering (_1, _2) when there are actual conflicts
-  // within the same collection path
+  // Generate a unique token name that considers the path context
   const tokenName = processTokenName(token, pathSegments);
 
   // Add the unique token name as the final segment, removing any leading underscore
