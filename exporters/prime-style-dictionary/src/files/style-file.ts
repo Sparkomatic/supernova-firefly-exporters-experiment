@@ -7,9 +7,13 @@ import { createHierarchicalStructure, deepMerge, buildReferencePath } from "../u
 /**
  * Creates a raw value for a token, to be used in the final key-value pair output.
  */
-function createTokenValue(value: string): any {
-  // Return only the clean value, without any object wrapping.
-  return value.replace(/['"]/g, "");
+function createTokenValue(value: any): any {
+  // If the value is an object, convert it to a string to prevent verbose logging.
+  if (typeof value === 'object' && value !== null) {
+    return JSON.stringify(value, null, 2).replace(/['"]/g, "");
+  }
+  // Otherwise, return the cleaned value.
+  return typeof value === 'string' ? value.replace(/['"]/g, "") : value;
 }
 
 /**
@@ -40,7 +44,7 @@ export function buildTokenObject(
         colorFormat: exportConfiguration.colorFormat,
         forceRemUnit: exportConfiguration.forceRemUnit,
         remBase: exportConfiguration.remBase,
-        tokenToVariableRef: (t) => `{${buildReferencePath(t)}}`, // Use the new helper to build full reference path
+        tokenToVariableRef: (t) => `{${buildReferencePath(t)}}`,
     });
     
     // Create the hierarchical object for this token.
