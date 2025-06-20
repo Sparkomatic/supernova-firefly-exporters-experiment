@@ -40,7 +40,7 @@ Pulsar.export(async (sdk: Supernova, context: PulsarContext): Promise<Array<AnyO
 
   // This is the root object we will build and export
   const finalResult: any = {
-    _comment: exportConfiguration.disclaimer,
+    _comment: exportConfiguration.disclaimer + "\n\nNote: Typography tokens generated specifically from Figma text styles have been skipped for now.",
     _lastUpdated: new Date().toISOString()
   };
 
