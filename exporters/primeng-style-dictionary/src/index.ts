@@ -98,7 +98,7 @@ Pulsar.export(async (sdk: Supernova, context: PulsarContext): Promise<Array<AnyO
   return [
     FileHelper.createTextFile({
         relativePath: './',
-        fileName: 'tokens.json',
+        fileName: exportConfiguration.outputFilename,
         content: JSON.stringify(finalResult, null, exportConfiguration.indent)
     })
   ];

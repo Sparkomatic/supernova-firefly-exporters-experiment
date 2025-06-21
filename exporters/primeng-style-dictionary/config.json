@@ -177,6 +177,14 @@
         "category": "Style files"
     },
     {
+        "key": "outputFilename",
+        "type": "string",
+        "default": "tokens.json",
+        "title": "Output filename",
+        "description": "The name of the main file to be generated. Recommended: tokens.json or firefly-design-tokens-primeng-preset.json",
+        "category": "Style files"
+    },
+    {
         "key": "tokenSortOrder",
         "type": "enum",
         "default": "default", 

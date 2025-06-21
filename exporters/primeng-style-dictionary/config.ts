@@ -63,4 +63,6 @@ export type ExporterConfiguration = {
   useTokenTypePrefixes: boolean
   /** When enabled, component tokens will be included in the export */
   includeComponentTokens: boolean
+  /** The name of the main output file. */
+  outputFilename: string
 }
