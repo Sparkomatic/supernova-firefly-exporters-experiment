@@ -80,6 +80,4 @@ export type ExporterConfiguration = {
   includeComponentTokens: boolean
   /** The name of the main output file. */
   outputFilename: string
-  /** An array of theme IDs to be excluded from the export. */
-  excludedThemeIds: string[]
 }
