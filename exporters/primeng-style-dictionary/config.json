@@ -169,6 +169,17 @@
         "category": "Themes"
     },
     {
+        "key": "excludedThemeIds",
+        "type": "array",
+        "default": [],
+        "title": "Exclude Themes",
+        "description": "Select any themes you wish to exclude from the export. By default, all themes are included.",
+        "category": "Themes",
+        "options": {
+            "source": "themes"
+        }
+    },
+    {
         "key": "generateEmptyFiles",
         "type": "boolean",
         "default": false,

@@ -66,21 +66,12 @@ Pulsar.export(async (sdk: Supernova, context: PulsarContext): Promise<Array<AnyO
   // Use the allowed list, excluding 'primitive', as the definitive list of themed collections to process.
   const themedCollectionNames = allowedTopLevelCollections.filter(c => c !== 'primitive');
 
-  // Determine which themes to apply based on configuration
-  let themesToApply: TokenTheme[] = [];
-  
-  // Use the themes selected on the Data page (context.themeIds)
-  if (context.themeIds && context.themeIds.length > 0) {
-    // Apply only the themes selected on the Data page
-    themesToApply = allThemes.filter(theme => 
-      context.themeIds!.includes(theme.id)
-    );
-  } else {
-    // If no themes selected on Data page, apply all themes
-    themesToApply = allThemes;
-  }
+  // Filter out any themes that the user has selected for exclusion in the configuration.
+  const themesToApply = allThemes.filter(theme => 
+    !exportConfiguration.excludedThemeIds?.includes(theme.id)
+  );
 
-  // Loop through each selected theme
+  // Loop through each theme that is not excluded.
   for (const theme of themesToApply) {
     const themeName = theme.name.toLowerCase();
 
