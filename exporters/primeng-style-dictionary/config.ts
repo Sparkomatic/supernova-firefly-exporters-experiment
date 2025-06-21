@@ -80,8 +80,4 @@ export type ExporterConfiguration = {
   includeComponentTokens: boolean
   /** The name of the main output file. */
   outputFilename: string
-  /** When enabled, use exclude mode for theme selection. When disabled, use include mode. */
-  excludeThemesMode: boolean
-  /** Array of theme IDs to exclude when excludeThemesMode is enabled */
-  excludedThemeIds: string[]
 }
