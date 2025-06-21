@@ -69,14 +69,14 @@ Pulsar.export(async (sdk: Supernova, context: PulsarContext): Promise<Array<AnyO
   // Determine which themes to apply based on configuration
   let themesToApply: TokenTheme[] = [];
   
-  // If themes are selected on the Data page, EXCLUDE them from the export.
+  // Use the themes selected on the Data page (context.themeIds)
   if (context.themeIds && context.themeIds.length > 0) {
-    // Apply all themes *except* for the ones selected in the UI
+    // Apply only the themes selected on the Data page
     themesToApply = allThemes.filter(theme => 
-      !context.themeIds!.includes(theme.id)
+      context.themeIds!.includes(theme.id)
     );
   } else {
-    // If no themes are selected, apply all themes by default.
+    // If no themes selected on Data page, apply all themes
     themesToApply = allThemes;
   }
 
