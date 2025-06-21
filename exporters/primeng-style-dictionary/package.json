@@ -1,5 +1,5 @@
 {
-  "name": "@supernovaio/exporter-prime-style-dictionary",
+  "name": "@supernovaio/exporter-primeng-style-dictionary",
   "version": "1.0.0",
   "description": "Export your design system tokens into a format suitable for Prime.",
   "main": "index.js",

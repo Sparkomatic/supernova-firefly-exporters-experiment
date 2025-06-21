@@ -1,6 +1,6 @@
 {
-    "id": "supernovaio.exporter-prime-style-dictionary",
-    "name": "Prime Style Dictionary",
+    "id": "supernovaio.exporter-primeng-style-dictionary",
+    "name": "PrimeNG Style Dictionary",
     "description": "Export your design tokens to a format suitable for Prime.",
     "author": "Supernova.io",
     "organization": "Supernova.io",
