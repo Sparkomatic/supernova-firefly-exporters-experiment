@@ -42,8 +42,6 @@ export type ExporterConfiguration = {
   colorPrecision: number
   /** Number of spaces used to indent every css variables */
   indent: number
-  /** When enabled, component tokens will be included in the export. When disabled, only primitive and semantic tokens will be exported */
-  includeComponentTokens: boolean
   /** When set, will prefix each token of a specific type with provided identifier. Put empty string if not necessary */
   tokenPrefixes: Record<TokenType, string>
   /** Name of each file that will be generated. Tokens are grouped by the type and will land in each of those files */
@@ -74,8 +72,6 @@ export type ExporterConfiguration = {
   customizeTokenPrefixes: boolean
   /** Global prefix for all token names. When set, all tokens will be prefixed with this value */
   globalNamePrefix: string
-  /** When enabled, includes the token type in variable names (e.g., '--dimension-components-button-width' vs '--components-button-width') */
-  includeTokenType: boolean
   /** Controls how token styles are organized in files */
   fileStructure: FileStructure
   /** Controls what parts are included in the token name */
@@ -86,4 +82,6 @@ export type ExporterConfiguration = {
   propertyToWriteNameTo: string
   /** If enabled, the resulting written properties will be encapsulated in var() syntax for easier copying */
   propertyToWriteNameToIncludesVar: boolean
+  /** When enabled, component tokens will be included in the export along with primitive and semantic tokens */
+  includeComponentTokens: boolean
 }
